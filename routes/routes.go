@@ -1,8 +1,9 @@
 package routes
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"onez19/controllers"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func SetupRoutes(app *fiber.App) {
@@ -12,4 +13,8 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/users", controllers.GetUsers)
 	app.Get("/workspaces/:workspaceId/sections", controllers.GetAllSectionsByWorkspaceID)
 	app.Get("/users/:username/workspaces", controllers.GetAllWorkspacesByUsername)
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World!")
+	})
+
 }

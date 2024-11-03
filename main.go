@@ -23,7 +23,7 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000", // ระบุ origin ที่อนุญาต
+		AllowOrigins: "http://localhost:3000, http://0.0.0.0:3000/", // ระบุ origin ที่อนุญาต
 		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
 		AllowHeaders: "Content-Type,Authorization",
 	}))
