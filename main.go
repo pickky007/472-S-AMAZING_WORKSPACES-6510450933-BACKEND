@@ -1,10 +1,12 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"log"
 	"onez19/config" // เปลี่ยนเป็นชื่อโมดูลของคุณ
 	"onez19/routes" // เปลี่ยนเป็นชื่อโมดูลของคุณ
+	"os"
+
+	"github.com/gofiber/fiber/v2/middleware/cors"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -33,7 +35,7 @@ func main() {
 	routes.SetupRoutes(app)
 
 	// เริ่มเซิร์ฟเวอร์
-	port := ":3001"
+	port := ":" + os.Getenv("PORT")
 	log.Printf("Server is running on http://localhost%s\n", port)
 	log.Fatal(app.Listen(port))
 }
