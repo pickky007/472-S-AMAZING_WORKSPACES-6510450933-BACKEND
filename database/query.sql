@@ -46,7 +46,6 @@ CREATE TABLE activity
     id           INT AUTO_INCREMENT,
     name         VARCHAR(256)  NOT NULL,
     description  varchar(1024) NOT NULL,
-    priority     INT(1)        NOT NULL DEFAULT 0,
     start_date   DATE          NOT NULL,
     end_date     DATE          NOT NULL,
     section_id   INT           NOT NULL,

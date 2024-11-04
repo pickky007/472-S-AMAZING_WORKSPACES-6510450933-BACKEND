@@ -16,5 +16,6 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
+	app.Get("/workspaces/:workspaceId/sections/:sectionId/activities", controllers.GetActivitiesBySectionAndWorkspace)
 
 }
