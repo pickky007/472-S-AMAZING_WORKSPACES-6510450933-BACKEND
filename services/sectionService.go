@@ -5,7 +5,7 @@ import (
 	"onez19/models"
 )
 
-func GetAllSectionsByWorkspaceID(workspaceID int) ([]models.Section, error) {
+func GetAllSectionsByWorkspaceID(workspaceID string) ([]models.Section, error) {
 	var sections []models.Section
 
 	// ดึงข้อมูล sections จากฐานข้อมูลตาม workspace_id

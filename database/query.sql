@@ -11,21 +11,19 @@ CREATE TABLE user
 -- Workspace
 CREATE TABLE workspace
 (
-    id          INT AUTO_INCREMENT,
+    id          CHAR(6) PRIMARY KEY,
     name        VARCHAR(256) NOT NULL,
     description VARCHAR(1024),
     owner       VARCHAR(256),
 
-    PRIMARY KEY (id),
     FOREIGN KEY (owner) REFERENCES user (username)
-
 );
 
 -- User Workspace
 CREATE TABLE user_workspace
 (
     username     VARCHAR(256),
-    workspace_id INT,
+    workspace_id CHAR(6),
 
     PRIMARY KEY (username, workspace_id),
     FOREIGN KEY (username) REFERENCES user (username),
@@ -36,7 +34,7 @@ CREATE TABLE user_workspace
 CREATE TABLE section
 (
     id           INT AUTO_INCREMENT,
-    workspace_id INT,
+    workspace_id CHAR(6),
     name         varchar(256) NOT NULL,
 
     PRIMARY KEY (id, workspace_id),
@@ -52,7 +50,7 @@ CREATE TABLE activity
     start_date   DATE          NOT NULL,
     end_date     DATE          NOT NULL,
     section_id   INT           NOT NULL,
-    workspace_id INT           NOT NULL,
+    workspace_id CHAR(6)           NOT NULL,
 
     PRIMARY KEY (id),
     FOREIGN KEY (section_id, workspace_id) REFERENCES section (id, workspace_id)

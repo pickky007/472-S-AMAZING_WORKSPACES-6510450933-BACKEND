@@ -9,23 +9,23 @@ VALUES ('test', '123', '3', '4'),
        ('test8', '123', '3', '4');
 
 -- ข้อมูลตัวอย่างสำหรับตาราง workspace
-INSERT INTO workspace (name, description,owner)
-VALUES ('Workspace A', 'This is the first workspace.','test'),
-       ('Workspace B', 'This workspace is focused on project management.','test'),
-       ('Workspace C', 'This workspace is for development and testing.','test'),
-       ('Workspace D', 'This workspace contains marketing materials.','test'),
-       ('Workspace E', 'This is a shared workspace for the team.','test');
+INSERT INTO workspace (id,name, description,owner)
+VALUES ('d296ec','Workspace A', 'This is the first workspace.','test'),
+       ('ac5b1e','Workspace B', 'This workspace is focused on project management.','test'),
+       ('7c2a5c','Workspace C', 'This workspace is for development and testing.','test'),
+       ('4511bf','Workspace D', 'This workspace contains marketing materials.','test'),
+       ('ec515f','Workspace E', 'This is a shared workspace for the team.','test');
 
 
 -- ข้อมูลตัวอย่างสำหรับตาราง section
 INSERT INTO section (workspace_id, name)
-VALUES (1, 'Section 1'),
-       (1, 'Section 2'),
-       (2, 'Section 3'),
-       (2, 'Section 4'),
-       (3, 'Section 5'),
-       (4, 'Section 6'),
-       (5, 'Section 7');
+VALUES ('d296ec', 'Section 1'),
+       ('d296ec', 'Section 2'),
+       ('ac5b1e', 'Section 3'),
+       ('ac5b1e', 'Section 4'),
+       ('7c2a5c', 'Section 5'),
+       ('4511bf', 'Section 6'),
+       ('ec515f', 'Section 7');
 
 -- ข้อมูลตัวอย่างสำหรับตาราง user
 INSERT INTO user (username, password, first_name, last_name)
@@ -36,11 +36,11 @@ VALUES ('user1', 'password1', 'John', 'Doe'),
 
 -- ข้อมูลตัวอย่างสำหรับตาราง user_workspace
 INSERT INTO user_workspace (username, workspace_id)
-VALUES ('user1', 1),
-       ('user1', 2),
-       ('user2', 2),
-       ('user2', 3),
-       ('user3', 1),
-       ('user3', 4),
-       ('user4', 5),
-       ('user4', 3);
+VALUES ('user1', 'd296ec'),
+       ('user1', 'ac5b1e'),
+       ('user2', 'ac5b1e'),
+       ('user2', '7c2a5c'),
+       ('user3', 'd296ec'),
+       ('user3', '4511bf'),
+       ('user4', 'ec515f'),
+       ('user4', '7c2a5c');
