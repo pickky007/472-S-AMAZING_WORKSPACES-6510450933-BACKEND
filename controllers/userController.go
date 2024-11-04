@@ -2,8 +2,10 @@
 package controllers
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"onez19/models"
 	"onez19/services"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func GetUsers(c *fiber.Ctx) error {
@@ -18,3 +20,20 @@ func GetUsers(c *fiber.Ctx) error {
 }
 
 // ฟังก์ชัน Register และ Login ยังคงเหมือนเดิม
+func Register(ctx *fiber.Ctx) error {
+	var user models.User
+
+	if err := ctx.BodyParser(&user); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if user.Username == "" || user.Password == "" || user.FirstName == "" || user.LastName == "" {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "all fields are required"})
+	}
+
+	if err := services.RegisterUser(user); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "User registered successfully"})
+}

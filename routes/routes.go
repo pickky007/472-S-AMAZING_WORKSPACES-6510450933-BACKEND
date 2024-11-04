@@ -25,4 +25,5 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("/workspaces/:workspaceId/activities/move", controllers.MoveActivity)
 	app.Post("/workspaces/:workspaceId/:sectionId/activities/:activityId/edit", controllers.EditActivity)
 	app.Post("/workspaces/:workspaceId/:sectionId/edit", controllers.EditSectionName)
+	app.Post("/register", controllers.Register)
 }

@@ -3,6 +3,8 @@ package services
 import (
 	"onez19/config"
 	"onez19/models"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetAllUsers() ([]models.UserResponse, error) {
@@ -28,4 +30,14 @@ func GetAllUsers() ([]models.UserResponse, error) {
 	}
 
 	return users, nil
+}
+
+func RegisterUser(user models.User) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	_, err = config.DB.Exec("INSERT INTO user (username, password, first_name, last_name) VALUES (?, ?, ?, ?)",
+		user.Username, hashedPassword, user.FirstName, user.LastName)
+	return err
 }
