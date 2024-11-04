@@ -41,3 +41,18 @@ func CreateWorkspace(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusCreated).JSON(workspace)
 }
+
+func JoinWorkspace(ctx *fiber.Ctx) error {
+	username := ctx.Params("username")
+	workspaceID := ctx.Params("workspace_id")
+
+	if username == "" || workspaceID == "" {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "username and workspace_id are required"})
+	}
+
+	if err := services.JoinWorkspace(username, workspaceID); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "User joined workspace successfully"})
+}

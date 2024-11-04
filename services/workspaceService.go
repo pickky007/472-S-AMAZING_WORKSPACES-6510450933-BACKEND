@@ -75,6 +75,11 @@ func CreateWorkspace(workspace models.Workspace) error {
 	return nil
 }
 
+func JoinWorkspace(username, workspaceID string) error {
+	_, err := config.DB.Exec("INSERT INTO user_workspace (username, workspace_id) VALUES (?, ?)", username, workspaceID)
+	return err
+}
+
 func generateShortUUID() string {
 	return uuid.New().String()[:6]
 }
