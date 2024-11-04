@@ -19,4 +19,5 @@ func SetupRoutes(app *fiber.App) {
 
 	app.Post("/users/:username/workspaces/create", controllers.CreateWorkspace)
 	app.Post("/users/:username/workspaces/:workspace_id/join", controllers.JoinWorkspace)
+	app.Post("/workspaces/:workspaceId/sections/create", controllers.CreateSection)
 }

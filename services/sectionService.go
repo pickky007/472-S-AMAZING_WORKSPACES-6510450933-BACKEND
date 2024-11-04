@@ -29,3 +29,8 @@ func GetAllSectionsByWorkspaceID(workspaceID string) ([]models.Section, error) {
 
 	return sections, nil
 }
+
+func CreateSection(section models.Section) error {
+	_, err := config.DB.Exec("INSERT INTO section (workspace_id, name) VALUES (?, ?)", section.WorkspaceID, section.Name)
+	return err
+}

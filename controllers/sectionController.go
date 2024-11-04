@@ -1,8 +1,10 @@
 package controllers
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"onez19/models"
 	"onez19/services"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func GetAllSectionsByWorkspaceID(c *fiber.Ctx) error {
@@ -18,4 +20,27 @@ func GetAllSectionsByWorkspaceID(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(sections) // ส่งข้อมูล sections กลับไปยัง client
+}
+
+func CreateSection(ctx *fiber.Ctx) error {
+	workspaceID := ctx.Params("workspaceId")
+
+	var sectionInput struct {
+		Name string `json:"name"`
+	}
+
+	if err := ctx.BodyParser(&sectionInput); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	section := models.Section{
+		WorkspaceID: workspaceID,
+		Name:        sectionInput.Name,
+	}
+
+	if err := services.CreateSection(section); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusCreated).JSON(section)
 }
