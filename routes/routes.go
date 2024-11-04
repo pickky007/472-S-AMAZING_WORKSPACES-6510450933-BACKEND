@@ -17,4 +17,5 @@ func SetupRoutes(app *fiber.App) {
 		return c.SendString("Hello, World!")
 	})
 
+	app.Post("/users/:username/workspaces/create", controllers.CreateWorkspace)
 }
