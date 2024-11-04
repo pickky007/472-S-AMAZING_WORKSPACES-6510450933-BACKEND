@@ -6,28 +6,33 @@ import (
 )
 
 func GetWorkspacesByUsername(username string) ([]models.Workspace, error) {
-	var workspaces []models.Workspace
+    var workspaces []models.Workspace
 
-	query := `
-		SELECT w.id, w.name, w.description, w.owner
-		FROM workspace AS w
-		INNER JOIN user_workspace AS uw ON w.id = uw.workspace_id
-		WHERE uw.username = ?
-	`
+    query := `
+        SELECT w.id, w.name, w.description, w.owner
+        FROM workspace AS w
+        INNER JOIN user_workspace AS uw ON w.id = uw.workspace_id
+        WHERE uw.username = ?
+    `
 
-	rows, err := config.DB.Query(query, username)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
+    rows, err := config.DB.Query(query, username)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
 
-	for rows.Next() {
-		var workspace models.Workspace
-		if err := rows.Scan(&workspace.ID, &workspace.Name, &workspace.Description); err != nil {
-			return nil, err
-		}
-		workspaces = append(workspaces, workspace)
-	}
+    for rows.Next() {
+        var workspace models.Workspace
+        if err := rows.Scan(&workspace.ID, &workspace.Name, &workspace.Description, &workspace.Owner); err != nil {
+            return nil, err
+        }
+        workspaces = append(workspaces, workspace)
+    }
 
-	return workspaces, nil
+    // ตรวจสอบข้อผิดพลาดจาก rows
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
+
+    return workspaces, nil
 }
