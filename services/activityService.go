@@ -46,3 +46,9 @@ func MoveActivity(activityID int, newSectionID int) error {
 	_, err := config.DB.Exec("UPDATE activity SET section_id = ? WHERE id = ?", newSectionID, activityID)
 	return err
 }
+
+func EditActivity(activity models.Activity) error {
+	_, err := config.DB.Exec("UPDATE activity SET name = ?, description = ?, start_date = ?, end_date = ? WHERE id = ?",
+		activity.Name, activity.Description, activity.StartDate, activity.EndDate, activity.ID)
+	return err
+}

@@ -44,3 +44,28 @@ func CreateSection(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusCreated).JSON(section)
 }
+
+func EditSectionName(ctx *fiber.Ctx) error {
+	sectionID, err := ctx.ParamsInt("sectionId")
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid sectionId"})
+	}
+
+	if sectionID == 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid sectionId"})
+	}
+
+	var sectionInput struct {
+		NewName string `json:"new_name"`
+	}
+
+	if err := ctx.BodyParser(&sectionInput); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if err := services.EditSectionName(sectionID, sectionInput.NewName); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Section name updated successfully"})
+}

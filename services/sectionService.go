@@ -34,3 +34,8 @@ func CreateSection(section models.Section) error {
 	_, err := config.DB.Exec("INSERT INTO section (workspace_id, name) VALUES (?, ?)", section.WorkspaceID, section.Name)
 	return err
 }
+
+func EditSectionName(sectionID int, newName string) error {
+	_, err := config.DB.Exec("UPDATE section SET name = ? WHERE id = ?", newName, sectionID)
+	return err
+}

@@ -78,3 +78,51 @@ func MoveActivity(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Activity moved successfully"})
 }
+
+func EditActivity(ctx *fiber.Ctx) error {
+	workspaceID := ctx.Params("workspaceId")
+	sectionID, err := ctx.ParamsInt("sectionId")
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid sectionId"})
+	}
+
+	activityID, err := ctx.ParamsInt("activityId")
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid activityId"})
+	}
+
+	if sectionID == 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid sectionId"})
+	}
+
+	if activityID == 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid activityId"})
+	}
+
+	var activityInput struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		StartDate   string `json:"start_date"` // use time.Time for actual date handling
+		EndDate     string `json:"end_date"`   // use time.Time for actual date handling
+	}
+
+	if err := ctx.BodyParser(&activityInput); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	activity := models.Activity{
+		ID:          activityID,
+		Name:        activityInput.Name,
+		Description: activityInput.Description,
+		StartDate:   activityInput.StartDate,
+		EndDate:     activityInput.EndDate,
+		SectionID:   sectionID,
+		WorkspaceID: workspaceID,
+	}
+
+	if err := services.EditActivity(activity); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(activity)
+}
