@@ -33,8 +33,8 @@ func CreateActivity(ctx *fiber.Ctx) error {
 	var activityInput struct {
 		Name        string `json:"name"`
 		Description string `json:"description"`
-		StartDate   string `json:"start_date"` // You can use time.Time for actual date handling
-		EndDate     string `json:"end_date"`   // You can use time.Time for actual date handling
+		StartDate   string `json:"start_date"` // use time.Time for actual date handling
+		EndDate     string `json:"end_date"`   // use time.Time for actual date handling
 	}
 
 	if err := ctx.BodyParser(&activityInput); err != nil {
