@@ -16,6 +16,7 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
+	app.Get("/workspaces/:workspaceId/sections/:sectionId/activities", controllers.GetActivitiesBySectionAndWorkspace)
 
 	app.Post("/users/:username/workspaces/create", controllers.CreateWorkspace)
 	app.Post("/users/:username/workspaces/:workspace_id/join", controllers.JoinWorkspace)
