@@ -45,6 +45,7 @@ CREATE TABLE activity
 (
     id           INT AUTO_INCREMENT,
     name         VARCHAR(256)  NOT NULL,
+    owner        VARCHAR(256)  NOT NULL,
     description  varchar(1024) NOT NULL,
     start_date   DATETIME      NOT NULL,
     end_date     DATETIME      NOT NULL,

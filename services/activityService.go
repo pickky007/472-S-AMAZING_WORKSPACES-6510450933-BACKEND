@@ -9,7 +9,7 @@ func GetActivitiesBySectionAndWorkspace(sectionID int, workspaceID string) ([]mo
 	var activities []models.Activity
 
 	query := `
-		SELECT a.id, a.name, a.description, a.start_date, a.end_date
+		SELECT a.id, a.name, a.description, a.start_date, a.end_date,a.owner
 		FROM activity AS a
 		WHERE a.section_id = ? AND a.workspace_id = ?
 	`
@@ -22,7 +22,7 @@ func GetActivitiesBySectionAndWorkspace(sectionID int, workspaceID string) ([]mo
 
 	for rows.Next() {
 		var activity models.Activity
-		if err := rows.Scan(&activity.ID, &activity.Name, &activity.Description, &activity.StartDate, &activity.EndDate); err != nil {
+		if err := rows.Scan(&activity.ID, &activity.Name, &activity.Description, &activity.StartDate, &activity.EndDate, &activity.Onwer); err != nil {
 			return nil, err
 		}
 		activities = append(activities, activity)
@@ -37,8 +37,8 @@ func GetActivitiesBySectionAndWorkspace(sectionID int, workspaceID string) ([]mo
 }
 
 func CreateActivity(activity models.Activity) error {
-	_, err := config.DB.Exec("INSERT INTO activity (name, description, start_date, end_date, section_id, workspace_id) VALUES (?, ?, ?, ?, ?, ?)",
-		activity.Name, activity.Description, activity.StartDate, activity.EndDate, activity.SectionID, activity.WorkspaceID)
+	_, err := config.DB.Exec("INSERT INTO activity (name, description, start_date, end_date, section_id, workspace_id, owner) VALUES (?, ?, ?, ?, ?, ?,?)",
+		activity.Name, activity.Description, activity.StartDate, activity.EndDate, activity.SectionID, activity.WorkspaceID, activity.Onwer)
 	return err
 }
 

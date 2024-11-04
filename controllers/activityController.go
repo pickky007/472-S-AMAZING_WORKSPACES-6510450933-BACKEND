@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"onez19/models"
 	"onez19/services"
 
@@ -26,6 +27,7 @@ func GetActivitiesBySectionAndWorkspace(c *fiber.Ctx) error {
 func CreateActivity(ctx *fiber.Ctx) error {
 	workspaceID := ctx.Params("workspaceId")
 	sectionID, err := ctx.ParamsInt("sectionId")
+	onwer := ctx.Params("owner")
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid section ID"})
 	}
@@ -34,7 +36,7 @@ func CreateActivity(ctx *fiber.Ctx) error {
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		StartDate   string `json:"start_date"` // use time.Time for actual date handling
-		EndDate     string `json:"end_date"`   // use time.Time for actual date handling
+		EndDate     string `json:"end_date"` // use time.Time for actual date handling
 	}
 
 	if err := ctx.BodyParser(&activityInput); err != nil {
@@ -45,10 +47,13 @@ func CreateActivity(ctx *fiber.Ctx) error {
 		Name:        activityInput.Name,
 		Description: activityInput.Description,
 		StartDate:   activityInput.StartDate,
+		Onwer:       onwer,
 		EndDate:     activityInput.EndDate,
 		SectionID:   sectionID,
 		WorkspaceID: workspaceID,
 	}
+
+	fmt.Println(onwer,sectionID,workspaceID)
 
 	if err := services.CreateActivity(activity); err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
