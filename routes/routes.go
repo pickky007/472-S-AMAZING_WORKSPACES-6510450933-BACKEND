@@ -2,11 +2,16 @@ package routes
 
 import (
 	"onez19/controllers"
+	"onez19/middlewares"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func SetupRoutes(app *fiber.App) {
+	app.Post("/register", controllers.Register)
+	app.Post("/login", controllers.Login)
+
+	app.Use(middlewares.AuthRequired)
 	// auth := app.Group("/auth")
 	// auth.Post("/register", controllers.Register)
 	// auth.Post("/login", controllers.Login)

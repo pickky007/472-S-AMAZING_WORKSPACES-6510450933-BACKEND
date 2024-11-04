@@ -2,8 +2,11 @@
 package controllers
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"onez19/models"
 	"onez19/services"
+	"time"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func GetUsers(c *fiber.Ctx) error {
@@ -18,3 +21,47 @@ func GetUsers(c *fiber.Ctx) error {
 }
 
 // ฟังก์ชัน Register และ Login ยังคงเหมือนเดิม
+func Register(ctx *fiber.Ctx) error {
+	var user models.User
+
+	if err := ctx.BodyParser(&user); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if user.Username == "" || user.Password == "" || user.FirstName == "" || user.LastName == "" {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "all fields are required"})
+	}
+
+	if err := services.RegisterUser(user); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "User registered successfully"})
+}
+
+func Login(ctx *fiber.Ctx) error {
+	var user models.User
+
+	if err := ctx.BodyParser(&user); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	token, err := services.LoginUser(user)
+
+	if err != nil {
+		return ctx.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	ctx.Cookie(&fiber.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 72),
+		HTTPOnly: true,
+		Secure:   true,
+		SameSite: "None",
+	})
+
+	return ctx.JSON(fiber.Map{
+		"message": "Login successful",
+	})
+}
