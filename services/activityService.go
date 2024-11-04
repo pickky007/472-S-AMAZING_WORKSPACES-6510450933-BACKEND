@@ -1,8 +1,8 @@
 package services
 
 import (
-	"onez19/models"
 	"onez19/config"
+	"onez19/models"
 )
 
 func GetActivitiesBySectionAndWorkspace(sectionID int, workspaceID string) ([]models.Activity, error) {
@@ -34,4 +34,15 @@ func GetActivitiesBySectionAndWorkspace(sectionID int, workspaceID string) ([]mo
 	}
 
 	return activities, nil
+}
+
+func CreateActivity(activity models.Activity) error {
+	_, err := config.DB.Exec("INSERT INTO activity (name, description, start_date, end_date, section_id, workspace_id) VALUES (?, ?, ?, ?, ?, ?)",
+		activity.Name, activity.Description, activity.StartDate, activity.EndDate, activity.SectionID, activity.WorkspaceID)
+	return err
+}
+
+func MoveActivity(activityID int, newSectionID int) error {
+	_, err := config.DB.Exec("UPDATE activity SET section_id = ? WHERE id = ?", newSectionID, activityID)
+	return err
 }

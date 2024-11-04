@@ -1,8 +1,10 @@
 package controllers
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"onez19/models"
 	"onez19/services"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func GetActivitiesBySectionAndWorkspace(c *fiber.Ctx) error {
@@ -19,4 +21,60 @@ func GetActivitiesBySectionAndWorkspace(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(activities) // ส่งข้อมูล activities กลับไปยัง client
+}
+
+func CreateActivity(ctx *fiber.Ctx) error {
+	workspaceID := ctx.Params("workspaceId")
+	sectionID, err := ctx.ParamsInt("sectionId")
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid section ID"})
+	}
+
+	var activityInput struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		StartDate   string `json:"start_date"` // You can use time.Time for actual date handling
+		EndDate     string `json:"end_date"`   // You can use time.Time for actual date handling
+	}
+
+	if err := ctx.BodyParser(&activityInput); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	activity := models.Activity{
+		Name:        activityInput.Name,
+		Description: activityInput.Description,
+		StartDate:   activityInput.StartDate,
+		EndDate:     activityInput.EndDate,
+		SectionID:   sectionID,
+		WorkspaceID: workspaceID,
+	}
+
+	if err := services.CreateActivity(activity); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusCreated).JSON(activity)
+}
+
+func MoveActivity(ctx *fiber.Ctx) error {
+
+	var moveInput struct {
+		NewSectionID int `json:"new_section_id"`
+		ActivityID   int `json:"activity_id"`
+	}
+
+	if err := ctx.BodyParser(&moveInput); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if moveInput.ActivityID == 0 || moveInput.NewSectionID == 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid activityId or newSectionId"})
+	}
+
+	if err := services.MoveActivity(moveInput.ActivityID, moveInput.NewSectionID); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Activity moved successfully"})
 }
