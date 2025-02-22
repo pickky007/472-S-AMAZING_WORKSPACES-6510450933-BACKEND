@@ -22,6 +22,7 @@ func SetupRoutes(app *fiber.App) {
 		return c.SendString("Hello, World!")
 	})
 	app.Get("/workspaces/:workspaceId/sections/:sectionId/activities", controllers.GetActivitiesBySectionAndWorkspace)
+	app.Get("/workspaces/:workspaceId/activities", controllers.GetActivitiesByWorkspace)
 
 	app.Post("/users/:username/workspaces/create", controllers.CreateWorkspace)
 	app.Post("/users/:username/workspaces/:workspace_id/join", controllers.JoinWorkspace)

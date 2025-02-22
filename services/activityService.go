@@ -36,6 +36,37 @@ func GetActivitiesBySectionAndWorkspace(sectionID int, workspaceID string) ([]mo
 	return activities, nil
 }
 
+func GetActivitiesByWorkspace(workspaceID string) ([]models.Activity, error) {
+	var activities []models.Activity
+
+	query := `
+		SELECT a.id, a.name, a.description, a.start_date, a.end_date,a.owner
+		FROM activity AS a
+		WHERE a.workspace_id = ?
+	`
+
+	rows, err := config.DB.Query(query, workspaceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var activity models.Activity
+		if err := rows.Scan(&activity.ID, &activity.Name, &activity.Description, &activity.StartDate, &activity.EndDate, &activity.Onwer); err != nil {
+			return nil, err
+		}
+		activities = append(activities, activity)
+	}
+
+	// ตรวจสอบข้อผิดพลาดจาก rows
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return activities, nil
+}
+
 func CreateActivity(activity models.Activity) error {
 	_, err := config.DB.Exec("INSERT INTO activity (name, description, start_date, end_date, section_id, workspace_id, owner) VALUES (?, ?, ?, ?, ?, ?,?)",
 		activity.Name, activity.Description, activity.StartDate, activity.EndDate, activity.SectionID, activity.WorkspaceID, activity.Onwer)
