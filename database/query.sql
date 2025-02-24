@@ -55,3 +55,17 @@ CREATE TABLE activity
     PRIMARY KEY (id),
     FOREIGN KEY (section_id, workspace_id) REFERENCES section (id, workspace_id)
 );
+
+--message
+CREATE TABLE message
+(
+    id  INT AUTO_INCREMENT,
+    message varchar(1024) NOT NULL,
+    date DATETIME NOT NULL,
+    workspace_id CHAR(6),
+    username VARCHAR(256),
+    PRIMARY KEY (id),
+    FOREIGN KEY (workspace_id) REFERENCES workspace(id),
+    FOREIGN KEY (username) REFERENCES user(username)
+
+);

@@ -24,6 +24,18 @@ func GetActivitiesBySectionAndWorkspace(c *fiber.Ctx) error {
 	return c.JSON(activities) // ส่งข้อมูล activities กลับไปยัง client
 }
 
+func GetActivitiesByWorkspace(c *fiber.Ctx) error {
+
+	workspaceID := c.Params("workspaceId") // รับ workspace ID จากพารามิเตอร์ใน URL (เป็น string)
+
+	activities, err := services.GetActivitiesByWorkspace(workspaceID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to fetch activities"})
+	}
+
+	return c.JSON(activities) // ส่งข้อมูล activities กลับไปยัง client
+}
+
 func CreateActivity(ctx *fiber.Ctx) error {
 	workspaceID := ctx.Params("workspaceId")
 	sectionID, err := ctx.ParamsInt("sectionId")
@@ -36,7 +48,7 @@ func CreateActivity(ctx *fiber.Ctx) error {
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		StartDate   string `json:"start_date"` // use time.Time for actual date handling
-		EndDate     string `json:"end_date"` // use time.Time for actual date handling
+		EndDate     string `json:"end_date"`   // use time.Time for actual date handling
 	}
 
 	if err := ctx.BodyParser(&activityInput); err != nil {
@@ -53,7 +65,7 @@ func CreateActivity(ctx *fiber.Ctx) error {
 		WorkspaceID: workspaceID,
 	}
 
-	fmt.Println(onwer,sectionID,workspaceID)
+	fmt.Println(onwer, sectionID, workspaceID)
 
 	if err := services.CreateActivity(activity); err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
