@@ -23,9 +23,26 @@ func CreateMessage(message models.Message) error {
 	}
 	return nil
 
-} 
+}
+func DeleteMessage(messageID string) error {
+	tx, err := config.DB.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
 
-func GetAllMessagesByWorkspaceID(workspace_id string) ([]models.Message, error){
+	_, err = tx.Exec("DELETE FROM message WHERE id = ?", messageID)
+	if err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetAllMessagesByWorkspaceID(workspace_id string) ([]models.Message, error) {
 	var messages []models.Message
 
 	query := `
@@ -55,4 +72,3 @@ func GetAllMessagesByWorkspaceID(workspace_id string) ([]models.Message, error){
 	return messages, nil
 
 }
-
