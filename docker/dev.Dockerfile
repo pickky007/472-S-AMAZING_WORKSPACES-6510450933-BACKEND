@@ -7,18 +7,19 @@ ARG GID=$UID
 RUN groupadd --gid $GID $USER \
     && useradd --uid $UID --gid $GID -m $USER \
     && apt-get update \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir /app \
+    && chown $UID:$GID /app
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+USER $USER
+
+COPY --chown=$UID:$GID go.mod go.sum ./
 
 RUN go mod download \
-    && go install github.com/air-verse/air@latest \
-    && chown -R $UID:$GID /go
+    && go install github.com/air-verse/air@latest
 
-COPY . ./
-
-USER $USER
+COPY --chown=$UID:$GID . ./
 
 CMD [ "air" ]

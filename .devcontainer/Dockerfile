@@ -13,19 +13,20 @@ RUN groupadd --gid $GID $USER \
         vim \
     && rm -rf /var/lib/apt/lists/* \
     && echo $USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USER \
-    && chmod 0440 /etc/sudoers.d/$USER
+    && chmod 0440 /etc/sudoers.d/$USER \
+    && mkdir /app \
+    && chown $UID:$GID /app
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+USER $USER
+
+COPY --chown=$UID:$GID go.mod go.sum ./
 
 RUN go mod download \
     && go install github.com/air-verse/air@latest \
-    && go install -tags mysql github.com/golang-migrate/migrate/v4/cmd/migrate@latest \
-    && chown -R $UID:$GID /go
+    && go install -tags mysql github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
-COPY . ./
-
-USER $USER
+COPY --chown=$UID:$GID . ./
 
 CMD [ "air" ]
