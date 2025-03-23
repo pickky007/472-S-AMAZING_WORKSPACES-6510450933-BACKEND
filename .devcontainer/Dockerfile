@@ -8,7 +8,9 @@ RUN groupadd --gid $GID $USER \
     && useradd --uid $UID --gid $GID -m $USER \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
+        bash-completion \
         sudo \
+        vim \
     && rm -rf /var/lib/apt/lists/* \
     && echo $USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USER \
     && chmod 0440 /etc/sudoers.d/$USER
