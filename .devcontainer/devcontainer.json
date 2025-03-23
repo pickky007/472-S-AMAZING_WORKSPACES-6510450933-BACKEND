@@ -41,7 +41,8 @@
             },
             "extensions": [
                 "golang.Go",
-                "Postman.postman-for-vscode"
+                "Postman.postman-for-vscode",
+                "eamodio.gitlens"
             ]
         }
     },
