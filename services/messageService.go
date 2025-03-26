@@ -73,8 +73,8 @@ func GetAllMessagesByWorkspaceID(workspace_id string) ([]models.Message, error) 
 
 }
 
-func SearchMessagesByText(query string) ([]models.Message, error) {
-	rows, err := config.DB.Query("SELECT * FROM message WHERE message LIKE ? ORDER BY date DESC", "%"+query+"%")
+func SearchMessagesByText(query string, workspaceID string) ([]models.Message, error) {
+	rows, err := config.DB.Query("SELECT * FROM message WHERE workspace_id = ? AND message LIKE ? ORDER BY date DESC", workspaceID, "%"+query+"%")
 	if err != nil {
 		return nil, err
 	}
@@ -92,8 +92,8 @@ func SearchMessagesByText(query string) ([]models.Message, error) {
 	return messages, nil
 }
 
-func SearchMessagesByRegex(query string) ([]models.Message, error) {
-	rows, err := config.DB.Query("SELECT * FROM message WHERE message REGEXP ? ORDER BY date DESC", query)
+func SearchMessagesByRegex(query string, workspaceID string) ([]models.Message, error) {
+	rows, err := config.DB.Query("SELECT * FROM message WHERE workspace_id = ? AND message REGEXP ? ORDER BY date DESC", workspaceID, query)
 	if err != nil {
 		return nil, err
 	}

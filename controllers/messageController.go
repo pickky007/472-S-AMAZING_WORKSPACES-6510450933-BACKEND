@@ -63,6 +63,7 @@ func GetAllMessagesByWorkspaceID(c *fiber.Ctx) error {
 }
 
 func SearchMessages(c *fiber.Ctx) error {
+	workspaceID := c.Params("workspaceId")
 	query := c.Query("query")
 	regex := c.Query("regex")
 
@@ -82,9 +83,9 @@ func SearchMessages(c *fiber.Ctx) error {
 				"error": "Invalid regular expression",
 			})
 		}
-		messages, err = services.SearchMessagesByRegex(query)
+		messages, err = services.SearchMessagesByRegex(query, workspaceID)
 	} else {
-		messages, err = services.SearchMessagesByText(query)
+		messages, err = services.SearchMessagesByText(query, workspaceID)
 	}
 
 	if err != nil {
