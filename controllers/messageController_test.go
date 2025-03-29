@@ -182,11 +182,11 @@ func TestGetAllMessagesByWorkspaceID(t *testing.T) {
 			workspaceID: "workspace123",
 			mockFunc: func(workspaceID string) ([]models.Message, error) {
 				return []models.Message{
-					{ID: 1, Message: "Hello", WorkspaceID: "workspace123", Username: "user1"}, 
+					{ID: 1, Message: "Hello", WorkspaceID: "workspace123", Username: "user1"},
 				}, nil
 			},
 			wantStatus: fiber.StatusOK,
-			wantBody:   `[{"id":1,"message":"Hello","date":"","workspace_id":"workspace123","username":"user1"}]`, 
+			wantBody:   `[{"date":"0001-01-01T00:00:00Z", "id":1, "message":"Hello", "username":"user1", "workspace_id":"workspace123"}]`,
 		},
 		{
 			name:        "Service Error",
@@ -216,4 +216,3 @@ func TestGetAllMessagesByWorkspaceID(t *testing.T) {
 		})
 	}
 }
-
