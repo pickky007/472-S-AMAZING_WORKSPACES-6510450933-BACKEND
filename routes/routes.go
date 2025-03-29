@@ -32,5 +32,7 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("/workspaces/:workspaceId/:sectionId/activities/:activityId/edit", controllers.EditActivity)
 	app.Post("/workspaces/:workspaceId/:sectionId/edit", controllers.EditSectionName)
 	app.Post("/messages", controllers.CreateMessage)
+	app.Post("/message/delete", controllers.DeleteMessage)
 	app.Get("/messages/:workspaceId", controllers.GetAllMessagesByWorkspaceID)
+	app.Get("/messages/:workspaceId/search", controllers.SearchMessages)
 }

@@ -3,6 +3,7 @@ package services
 import (
 	"onez19/config"
 	"onez19/models"
+	"time"
 )
 
 func CreateMessage(message models.Message) error {
@@ -23,9 +24,26 @@ func CreateMessage(message models.Message) error {
 	}
 	return nil
 
-} 
+}
+func DeleteMessage(messageID string) error {
+	tx, err := config.DB.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
 
-func GetAllMessagesByWorkspaceID(workspace_id string) ([]models.Message, error){
+	_, err = tx.Exec("DELETE FROM message WHERE id = ?", messageID)
+	if err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetAllMessagesByWorkspaceID(workspace_id string) ([]models.Message, error) {
 	var messages []models.Message
 
 	query := `
@@ -42,9 +60,19 @@ func GetAllMessagesByWorkspaceID(workspace_id string) ([]models.Message, error){
 
 	for rows.Next() {
 		var message models.Message
-		if err := rows.Scan(&message.ID, &message.Message, &message.Date, &message.WorkspaceID, &message.Username); err != nil {
+		var rawDate []byte // Store the raw byte slice
+
+		if err := rows.Scan(&message.ID, &message.Message, &rawDate, &message.WorkspaceID, &message.Username); err != nil {
 			return nil, err
 		}
+
+		// Convert rawDate to time.Time
+		parsedTime, err := time.Parse("2006-01-02 15:04:05", string(rawDate))
+		if err != nil {
+			return nil, err
+		}
+
+		message.Date = parsedTime
 		messages = append(messages, message)
 	}
 
@@ -56,3 +84,60 @@ func GetAllMessagesByWorkspaceID(workspace_id string) ([]models.Message, error){
 
 }
 
+func SearchMessagesByText(query string, workspaceID string) ([]models.Message, error) {
+	rows, err := config.DB.Query("SELECT * FROM message WHERE workspace_id = ? AND message LIKE ? ORDER BY date DESC", workspaceID, "%"+query+"%")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var messages []models.Message
+	for rows.Next() {
+		var message models.Message
+		var rawDate []byte // Store the raw byte slice
+
+		if err := rows.Scan(&message.ID, &message.Message, &rawDate, &message.WorkspaceID, &message.Username); err != nil {
+			return nil, err
+		}
+
+		// Convert rawDate to time.Time
+		parsedTime, err := time.Parse("2006-01-02 15:04:05", string(rawDate))
+		if err != nil {
+			return nil, err
+		}
+
+		message.Date = parsedTime
+		messages = append(messages, message)
+	}
+
+	return messages, nil
+}
+
+func SearchMessagesByRegex(query string, workspaceID string) ([]models.Message, error) {
+	rows, err := config.DB.Query("SELECT * FROM message WHERE workspace_id = ? AND message REGEXP ? ORDER BY date DESC", workspaceID, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var messages []models.Message
+	for rows.Next() {
+		var message models.Message
+		var rawDate []byte // Store the raw byte slice
+
+		if err := rows.Scan(&message.ID, &message.Message, &rawDate, &message.WorkspaceID, &message.Username); err != nil {
+			return nil, err
+		}
+
+		// Convert rawDate to time.Time
+		parsedTime, err := time.Parse("2006-01-02 15:04:05", string(rawDate))
+		if err != nil {
+			return nil, err
+		}
+
+		message.Date = parsedTime
+		messages = append(messages, message)
+	}
+
+	return messages, nil
+}

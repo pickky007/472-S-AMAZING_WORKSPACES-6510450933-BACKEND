@@ -36,7 +36,7 @@ func main() {
 	routes.SetupRoutes(app)
 
 	// เริ่มเซิร์ฟเวอร์
-	port := ":" + os.Getenv("PORT")
+	port := ":" + os.Getenv("APP_PORT")
 	log.Printf("Server is running on http://localhost%s\n", port)
 	log.Fatal(app.Listen(port))
 }
