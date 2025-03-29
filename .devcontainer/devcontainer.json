@@ -42,7 +42,8 @@
             "extensions": [
                 "golang.Go",
                 "Postman.postman-for-vscode",
-                "eamodio.gitlens"
+                "eamodio.gitlens",
+                "cweijan.vscode-mysql-client2"
             ]
         }
     },
