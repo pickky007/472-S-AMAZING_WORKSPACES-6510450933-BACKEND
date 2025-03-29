@@ -22,7 +22,7 @@ func CreateMessage(ctx *fiber.Ctx) error {
 
 	message := models.Message{
 		Message:     messageInput.Message,
-		Date:        time.Now().Format(time.RFC3339),
+		Date:        time.Now(),
 		WorkspaceID: messageInput.WorkspaceID,
 		Username:    messageInput.Username,
 	}

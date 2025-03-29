@@ -3,6 +3,7 @@ package services
 import (
 	"onez19/config"
 	"onez19/models"
+	"time"
 )
 
 func CreateMessage(message models.Message) error {
@@ -59,9 +60,19 @@ func GetAllMessagesByWorkspaceID(workspace_id string) ([]models.Message, error) 
 
 	for rows.Next() {
 		var message models.Message
-		if err := rows.Scan(&message.ID, &message.Message, &message.Date, &message.WorkspaceID, &message.Username); err != nil {
+		var rawDate []byte // Store the raw byte slice
+
+		if err := rows.Scan(&message.ID, &message.Message, &rawDate, &message.WorkspaceID, &message.Username); err != nil {
 			return nil, err
 		}
+
+		// Convert rawDate to time.Time
+		parsedTime, err := time.Parse("2006-01-02 15:04:05", string(rawDate))
+		if err != nil {
+			return nil, err
+		}
+
+		message.Date = parsedTime
 		messages = append(messages, message)
 	}
 
@@ -83,9 +94,19 @@ func SearchMessagesByText(query string, workspaceID string) ([]models.Message, e
 	var messages []models.Message
 	for rows.Next() {
 		var message models.Message
-		if err := rows.Scan(&message.ID, &message.Message, &message.Date, &message.WorkspaceID, &message.Username); err != nil {
+		var rawDate []byte // Store the raw byte slice
+
+		if err := rows.Scan(&message.ID, &message.Message, &rawDate, &message.WorkspaceID, &message.Username); err != nil {
 			return nil, err
 		}
+
+		// Convert rawDate to time.Time
+		parsedTime, err := time.Parse("2006-01-02 15:04:05", string(rawDate))
+		if err != nil {
+			return nil, err
+		}
+
+		message.Date = parsedTime
 		messages = append(messages, message)
 	}
 
@@ -102,9 +123,19 @@ func SearchMessagesByRegex(query string, workspaceID string) ([]models.Message, 
 	var messages []models.Message
 	for rows.Next() {
 		var message models.Message
-		if err := rows.Scan(&message.ID, &message.Message, &message.Date, &message.WorkspaceID, &message.Username); err != nil {
+		var rawDate []byte // Store the raw byte slice
+
+		if err := rows.Scan(&message.ID, &message.Message, &rawDate, &message.WorkspaceID, &message.Username); err != nil {
 			return nil, err
 		}
+
+		// Convert rawDate to time.Time
+		parsedTime, err := time.Parse("2006-01-02 15:04:05", string(rawDate))
+		if err != nil {
+			return nil, err
+		}
+
+		message.Date = parsedTime
 		messages = append(messages, message)
 	}
 
