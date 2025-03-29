@@ -60,4 +60,3 @@ func GetAllMessagesByWorkspaceID(c *fiber.Ctx) error {
 
 	return c.JSON(messages)
 }
-
