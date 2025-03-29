@@ -1,0 +1,41 @@
+name: $APP_NAME
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/dev.Dockerfile
+      args:
+        - USER=${CONTAINER_USER:-user}
+        - UID=${HOST_UID:-1000}
+        - GID=${HOST_GID:-${HOST_UID:-1000}}
+    ports:
+      - $APP_PORT:$APP_PORT
+    volumes:
+      - .:/app
+    networks:
+      - mysql-net
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:9.2
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DB_PASS
+      - MYSQL_USER=$DB_USER
+      - MYSQL_PASSWORD=$DB_PASS
+      - MYSQL_DATABASE=$DB_NAME
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - mysql-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping"]
+      interval: 3s
+
+volumes:
+  mysql-data:
+
+networks:
+  mysql-net:

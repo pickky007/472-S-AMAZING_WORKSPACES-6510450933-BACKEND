@@ -72,3 +72,41 @@ func GetAllMessagesByWorkspaceID(workspace_id string) ([]models.Message, error) 
 	return messages, nil
 
 }
+
+func SearchMessagesByText(query string, workspaceID string) ([]models.Message, error) {
+	rows, err := config.DB.Query("SELECT * FROM message WHERE workspace_id = ? AND message LIKE ? ORDER BY date DESC", workspaceID, "%"+query+"%")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var messages []models.Message
+	for rows.Next() {
+		var message models.Message
+		if err := rows.Scan(&message.ID, &message.Message, &message.Date, &message.WorkspaceID, &message.Username); err != nil {
+			return nil, err
+		}
+		messages = append(messages, message)
+	}
+
+	return messages, nil
+}
+
+func SearchMessagesByRegex(query string, workspaceID string) ([]models.Message, error) {
+	rows, err := config.DB.Query("SELECT * FROM message WHERE workspace_id = ? AND message REGEXP ? ORDER BY date DESC", workspaceID, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var messages []models.Message
+	for rows.Next() {
+		var message models.Message
+		if err := rows.Scan(&message.ID, &message.Message, &message.Date, &message.WorkspaceID, &message.Username); err != nil {
+			return nil, err
+		}
+		messages = append(messages, message)
+	}
+
+	return messages, nil
+}

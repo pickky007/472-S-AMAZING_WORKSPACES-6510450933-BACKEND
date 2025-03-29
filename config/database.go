@@ -13,7 +13,7 @@ var DB *sql.DB
 
 func ConnectDatabase() {
     var err error
-    dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/" + os.Getenv("DB_NAME")
+    dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASS") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/" + os.Getenv("DB_NAME")
     DB, err = sql.Open("mysql", dsn)
     if err != nil {
         log.Fatal(err)
